@@ -8,9 +8,18 @@ router.route('/testimonials').get((req, res) => {
 });
 
 router.route('/testimonials/:id').get((req, res) => {
-  const id =
-    req.params.id === 'random' ? Math.floor(Math.random() * db.testimonials.length + 1).toString() : req.params.id;
-  const testimonial = db.testimonials[id - 1];
+  const id = req.params.id;
+  const testimonial = db.testimonials.find((item) => item.id === id);
+  if (testimonial) {
+    res.send(testimonial);
+  } else {
+    res.status(404).send({ message: 'Testimonial not found' });
+  }
+});
+
+router.route('/testimonials/random').get((req, res) => {
+  const id = Math.floor(Math.random() * db.testimonials.length + 1).toString();
+  const testimonial = db.testimonials.find((item) => item.id === id);
   if (testimonial) {
     res.send(testimonial);
   } else {

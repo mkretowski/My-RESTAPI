@@ -8,8 +8,18 @@ router.route('/concerts').get((req, res) => {
 });
 
 router.route('/concerts/:id').get((req, res) => {
-  const id = req.params.id === 'random' ? Math.floor(Math.random() * db.concerts.length + 1).toString() : req.params.id;
-  const concert = db.concerts[id - 1];
+  const id = req.params.id;
+  const concert = db.concerts.find((item) => item.id === id);
+  if (concert) {
+    res.send(concert);
+  } else {
+    res.status(404).send({ message: 'Concert not found' });
+  }
+});
+
+router.route('/concerts/random').get((req, res) => {
+  const id = Math.floor(Math.random() * db.concerts.length + 1).toString();
+  const concert = db.concerts.find((item) => item.id === id);
   if (concert) {
     res.send(concert);
   } else {
