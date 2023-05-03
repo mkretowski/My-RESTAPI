@@ -30,11 +30,21 @@ router.route('/seats/random').get((req, res) => {
 router.route('/seats').post((req, res) => {
   const { day, seat, client, email } = req.body;
 
+  const checkAvailability = (arr, day, seat) => {
+    return arr.some((arrVal) => day === arrVal.day && seat === arrVal.seat);
+  };
+
+  const seatAvailable = checkAvailability(db.seats, day, seat);
+
   if (day && seat && client && email) {
-    const id = uuid.v1();
-    const seat_ = { id, day, seat, client, email };
-    db.seats.push(seat_);
-    res.redirect('/seats');
+    if (!seatAvailable) {
+      const id = uuid.v1();
+      const seat_ = { id, day, seat, client, email };
+      db.seats.push(seat_);
+      res.redirect('/seats');
+    } else {
+      res.status(400).send({ message: 'The slot is already taken...' });
+    }
   } else {
     res.status(400).send({ message: 'Invalid data.' });
   }
