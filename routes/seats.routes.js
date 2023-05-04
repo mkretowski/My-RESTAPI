@@ -8,8 +8,8 @@ router.route('/seats').get((req, res) => {
 });
 
 router.route('/seats/random').get((req, res) => {
-  const id = Math.floor(Math.random() * db.seats.length + 1).toString();
-  const seat = db.seats.find((item) => item.id === id);
+  const id = Math.floor(Math.random() * db.seats.length).toString();
+  const seat = db.seats[id];
   if (seat) {
     res.send(seat);
   } else {
