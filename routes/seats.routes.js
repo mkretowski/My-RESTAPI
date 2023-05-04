@@ -7,8 +7,8 @@ router.route('/seats').get((req, res) => {
   res.send(db.seats);
 });
 
-router.route('/seats/:id').get((req, res) => {
-  const id = req.params.id;
+router.route('/seats/random').get((req, res) => {
+  const id = Math.floor(Math.random() * db.seats.length + 1).toString();
   const seat = db.seats.find((item) => item.id === id);
   if (seat) {
     res.send(seat);
@@ -17,8 +17,8 @@ router.route('/seats/:id').get((req, res) => {
   }
 });
 
-router.route('/seats/random').get((req, res) => {
-  const id = Math.floor(Math.random() * db.seats.length + 1).toString();
+router.route('/seats/:id').get((req, res) => {
+  const id = req.params.id;
   const seat = db.seats.find((item) => item.id === id);
   if (seat) {
     res.send(seat);

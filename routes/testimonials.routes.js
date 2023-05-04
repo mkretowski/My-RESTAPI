@@ -7,8 +7,8 @@ router.route('/testimonials').get((req, res) => {
   res.send(db.testimonials);
 });
 
-router.route('/testimonials/:id').get((req, res) => {
-  const id = req.params.id;
+router.route('/testimonials/random').get((req, res) => {
+  const id = Math.floor(Math.random() * db.testimonials.length + 1).toString();
   const testimonial = db.testimonials.find((item) => item.id === id);
   if (testimonial) {
     res.send(testimonial);
@@ -17,8 +17,8 @@ router.route('/testimonials/:id').get((req, res) => {
   }
 });
 
-router.route('/testimonials/random').get((req, res) => {
-  const id = Math.floor(Math.random() * db.testimonials.length + 1).toString();
+router.route('/testimonials/:id').get((req, res) => {
+  const id = req.params.id;
   const testimonial = db.testimonials.find((item) => item.id === id);
   if (testimonial) {
     res.send(testimonial);
