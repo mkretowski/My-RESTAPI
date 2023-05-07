@@ -11,12 +11,15 @@
   }
 }
 
-@media (max-width: 1200px) {
+.free_seats {
+  display: flex;
+  justify-content: center;
+}
 
+@media (max-width: 1200px) {
   .seats__seat {
     width: 2.2rem;
     height: 2.2rem;
     padding: 0 !important;
   }
 }
-
