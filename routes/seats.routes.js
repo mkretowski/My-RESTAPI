@@ -1,82 +1,12 @@
-const uuid = require('uuid');
 const express = require('express');
-const { db } = require('../db/db');
 const router = express.Router();
+const SeatController = require('../controllers/seats.controller');
 
-router.route('/seats').get((req, res) => {
-  res.send(db.seats);
-});
-
-router.route('/seats/random').get((req, res) => {
-  const id = Math.floor(Math.random() * db.seats.length).toString();
-  const seat = db.seats[id];
-  if (seat) {
-    res.send(seat);
-  } else {
-    res.status(404).send({ message: 'Seat not found' });
-  }
-});
-
-router.route('/seats/:id').get((req, res) => {
-  const id = req.params.id;
-  const seat = db.seats.find((item) => item.id === id);
-  if (seat) {
-    res.send(seat);
-  } else {
-    res.status(404).send({ message: 'Seat not found' });
-  }
-});
-
-router.route('/seats').post((req, res) => {
-  const { day, seat, client, email } = req.body;
-
-  const checkAvailability = (arr, day, seat) => {
-    return arr.some((arrVal) => day === arrVal.day && seat === arrVal.seat);
-  };
-
-  const seatAvailable = checkAvailability(db.seats, day, seat);
-
-  if (day && seat && client && email) {
-    if (!seatAvailable) {
-      const id = uuid.v1();
-      const seat_ = { id, day, seat, client, email };
-      db.seats.push(seat_);
-      req.io.emit('seatsUpdated', db.seats);
-      res.redirect('/seats');
-    } else {
-      res.status(400).send({ message: 'The slot is already taken...' });
-    }
-  } else {
-    res.status(400).send({ message: 'Invalid data.' });
-  }
-});
-
-router.route('/seats/:id').put((req, res) => {
-  const id = req.params.id;
-  const { day, seat, client, email } = req.body;
-
-  const seat_ = db.seats.find((item) => item.id === id);
-  if (seat_) {
-    seat_.day = day;
-    seat_.seat = seat;
-    seat_.client = client;
-    seat_.email = email;
-    res.redirect('/seats');
-  } else {
-    res.status(404).send({ message: 'Seat not found' });
-  }
-});
-
-router.route('/seats/:id').delete((req, res) => {
-  const id = req.params.id;
-
-  const index = db.seats.findIndex((item) => item.id === id);
-  if (index !== -1) {
-    db.seats.splice(index, 1);
-    res.redirect('/seats');
-  } else {
-    res.status(404).send({ message: 'Seat not found' });
-  }
-});
+router.get('/seats', SeatController.getAll);
+router.get('/seats/random', SeatController.getRandom);
+router.get('/seats/:id', SeatController.getOne);
+router.post('/seats', SeatController.postNew);
+router.put('/seats/:id', SeatController.update);
+router.delete('/seats/:id', SeatController.delete);
 
 module.exports = router;
