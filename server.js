@@ -45,14 +45,26 @@ app.use((req, res) => {
   res.status(404).send('404 not found...');
 });
 
+const NODE_ENV = process.env.NODE_ENV;
+let dbUri = '';
+
 // connects our backend code with the database
-mongoose.connect(
-  'mongodb+srv://john-doe:%3F9MdBAt2Cq%24@cluster0.ksgkrwz.mongodb.net/NewWaveDB?retryWrites=true&w=majority',
-  { useNewUrlParser: true }
-);
+// mongoose.connect(
+//   'mongodb+srv://john-doe:%3F9MdBAt2Cq%24@cluster0.ksgkrwz.mongodb.net/NewWaveDB?retryWrites=true&w=majority',
+//   { useNewUrlParser: true }
+// );
+
+if (NODE_ENV === 'production')
+  dbUri = 'mongodb+srv://john-doe:%3F9MdBAt2Cq%24@cluster0.ksgkrwz.mongodb.net/NewWaveDB?retryWrites=true&w=majority';
+else if (NODE_ENV === 'test') dbUri = 'mongodb://localhost:27017/NewWaveDBtest';
+else dbUri = 'mongodb://localhost:27017/NewWaveDB';
+
+mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 
 db.once('open', () => {
   console.log('Connected to the database');
 });
 db.on('error', (err) => console.log('Error ' + err));
+
+module.exports = server;
