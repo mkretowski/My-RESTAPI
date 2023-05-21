@@ -1,6 +1,8 @@
 const Concert = require('../models/concert.model');
 const Seats = require('../models/seat.model');
 const Workshops = require('../models/workshop.model'); //import necessary for populate method
+var sanitize = require('mongo-sanitize');
+
 exports.getAll = async (req, res) => {
   try {
     const concerts = await Concert.find().populate('workshops');
@@ -109,7 +111,11 @@ exports.searchByPrice = async (req, res) => {
 
 exports.postNew = async (req, res) => {
   try {
-    const { performer, genre, price, day, image } = req.body;
+    const performer = sanitize(req.body.performer);
+    const genre = sanitize(req.body.genre);
+    const price = sanitize(req.body.price);
+    const day = sanitize(req.body.day);
+    const image = sanitize(req.body.image);
     const newConcert = await Concert.create({ performer, genre, price, day, image });
     res.json({ message: 'OK', newConcert: newConcert });
   } catch (err) {
