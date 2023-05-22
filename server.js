@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const app = express();
 const path = require('path');
 const socket = require('socket.io');
+const helmet = require('helmet');
 
 const server = app.listen(process.env.PORT || 8000, () => {
   console.log('Server is running on port: 8000');
@@ -29,6 +30,7 @@ const seatsRoutes = require('./routes/seats.routes');
 const concertsRoutes = require('./routes/concerts.routes');
 const testimonialsRoutes = require('./routes/testimonials.routes');
 
+app.use(helmet());
 app.use(cors());
 app.use(express.static(path.join(__dirname, '/client/build'))); // Serve static files from the React app
 app.use(express.urlencoded({ extended: false })); //x-www-form-urlencoded
@@ -51,8 +53,7 @@ let dbUri = '';
 if (NODE_ENV === 'production') dbUri = 'mongodb://localhost:27017/NewWaveDB';
 else if (NODE_ENV === 'test') dbUri = 'mongodb://localhost:27017/NewWaveDBtest';
 else
-  dbUri =
-    'mongodb+srv://john-doe:${process.env.DB_PASS}@cluster0.ksgkrwz.mongodb.net/NewWaveDB?retryWrites=true&w=majority';
+  dbUri = `mongodb+srv://john-doe:${process.env.DB_PASS}@cluster0.ksgkrwz.mongodb.net/NewWaveDB?retryWrites=true&w=majority`;
 
 mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;

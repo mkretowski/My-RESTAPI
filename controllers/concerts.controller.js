@@ -1,7 +1,7 @@
 const Concert = require('../models/concert.model');
 const Seats = require('../models/seat.model');
 const Workshops = require('../models/workshop.model'); //import necessary for populate method
-var sanitize = require('mongo-sanitize');
+const sanitize = require('mongo-sanitize');
 
 exports.getAll = async (req, res) => {
   try {
