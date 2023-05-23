@@ -1,3 +1,4 @@
+const dotenv = require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -48,12 +49,16 @@ app.use((req, res) => {
 });
 
 const NODE_ENV = process.env.NODE_ENV;
+console.log(NODE_ENV);
 let dbUri = '';
 
-if (NODE_ENV === 'production') dbUri = 'mongodb://localhost:27017/NewWaveDB';
-else if (NODE_ENV === 'test') dbUri = 'mongodb://localhost:27017/NewWaveDBtest';
-else
+if (NODE_ENV === 'production') {
   dbUri = `mongodb+srv://john-doe:${process.env.DB_PASS}@cluster0.ksgkrwz.mongodb.net/NewWaveDB?retryWrites=true&w=majority`;
+} else if (NODE_ENV === 'test') {
+  dbUri = 'mongodb://localhost:27017/NewWaveDBtest';
+} else {
+  dbUri = 'mongodb://localhost:27017/NewWaveDB';
+}
 
 mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
